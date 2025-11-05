@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Personal Links</title>
+  <style>
+    :root {
+      --bg-light: #f9f9f9;
+      --text-light: #222;
+      --card-light: #fff;
+      --bg-dark: #121212;
+      --text-dark: #f1f1f1;
+      --card-dark: #1e1e1e;
+      --accent: #4e9af1;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      background: var(--card-light);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+    }
+
+    body.dark .container {
+      background: var(--card-dark);
+      box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+    }
+
+    img.profile {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 3px solid var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    p {
+      margin: 0.5rem 0 1.5rem;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .links a {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      transition: all 0.25s;
+      font-weight: 500;
+    }
+
+    .links a:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .toggle-theme {
+      margin-top: 1rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--accent);
+      transition: transform 0.3s;
+    }
+
+    .toggle-theme:hover {
+      transform: rotate(20deg);
+    }
+  </style>
+</head>
+<body class="light">
+  <div class="container">
+    <img src="https://via.placeholder.com/100" alt="Profile" class="profile">
+    <h1>Muhammad Syauqi Waafi</h1>
+    <p>saya manusia</p>
+    <div class="links">
+      <a href="https://instagram.com/syqi_waafi" target="_blank">Instagram</a>
+      <a href="https://github.com/Syqiwaafi" target="_blank">GitHub</a>
+      <a href="#" target="_blank">YouTube</a>
+      <a href="#" target="_blank">Portfolio</a>
+    </div>
+    <button class="toggle-theme" id="themeToggle">🌙</button>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    toggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      body.classList.toggle('light');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>

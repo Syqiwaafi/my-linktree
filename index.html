@@ -25,9 +25,18 @@
       align-items: center;
       justify-content: center;
       transition: background 0.3s, color 0.3s;
-      
+      overflow: hidden;
     }
-    
+
+    /* Canvas background for particle effect */
+    canvas#particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
 
     body.light {
       background: var(--bg-light);
@@ -48,6 +57,8 @@
       background: var(--card-light);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: background 0.3s;
+      position: relative;
+      z-index: 1;
     }
 
     body.dark .container {
@@ -70,9 +81,16 @@
     }
 
     p {
-      margin: 0.5rem 0 1.5rem;
+      margin: 0.5rem 0 1rem;
       font-size: 0.95rem;
       opacity: 0.8;
+    }
+
+    .clock {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
     }
 
     .links a {
@@ -102,44 +120,44 @@
       color: var(--accent);
       transition: transform 0.3s;
     }
+
     .contact {
-  margin-top: 30px;
-}
+      margin-top: 30px;
+    }
 
-.contact h2 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
+    .contact h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-family: inherit;
-}
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+    }
 
-button[type="submit"] {
-  background: var(--accent);
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.25s;
-}
+    button[type="submit"] {
+      background: var(--accent);
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
 
-button[type="submit"]:hover {
-  transform: scale(1.05);
-  background-color: #3b7ee0;
-}
-
+    button[type="submit"]:hover {
+      transform: scale(1.05);
+      background-color: #3b7ee0;
+    }
 
     .toggle-theme:hover {
       transform: rotate(20deg);
@@ -147,10 +165,14 @@ button[type="submit"]:hover {
   </style>
 </head>
 <body class="light">
-    <div class="container">
+  <canvas id="particles"></canvas>
+
+  <div class="container">
     <img src="https://via.placeholder.com/100" alt="Profile" class="profile">
     <h1>Muhammad Syauqi Waafi</h1>
     <p>saya manusia</p>
+    <div class="clock" id="clock"></div>
+
     <div class="links">
       <a href="https://instagram.com/syqi_waafi" target="_blank">Instagram</a>
       <a href="https://github.com/Syqiwaafi" target="_blank">GitHub</a>
@@ -160,65 +182,88 @@ button[type="submit"]:hover {
 
     <section class="contact">
       <h2>Contact Me</h2>
-      <form id="contactForm" action="https://formspree.io/f/movpgkaz" method="POST">
-  <input type="text" name="name" placeholder="Your Name" required>
-  <input type="email" name="_replyto" placeholder="Your Email" required>
-  <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
-  <button type="submit" id="submitBtn">Send Message</button>
-  <p id="formStatus" style="margin-top:10px;"></p>
-</form>
+      <form action="https://formspree.io/f/movpgkaz" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="_replyto" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
     </section>
 
     <button class="toggle-theme" id="themeToggle">🌙</button>
   </div>
 
-
   <script>
+    // 🌙 Theme Toggle
     const toggle = document.getElementById('themeToggle');
     const body = document.body;
-
     toggle.addEventListener('click', () => {
       body.classList.toggle('dark');
       body.classList.toggle('light');
       toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
     });
-  </script>
 
-<script>
-  const form = document.getElementById("contactForm");
-  const submitBtn = document.getElementById("submitBtn");
-  const formStatus = document.getElementById("formStatus");
+    // ⏰ Digital Clock
+    const clock = document.getElementById('clock');
+    function updateClock() {
+      const now = new Date();
+      clock.textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Sending...";
+    // ✨ Particle Background Effect
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
 
-    const data = new FormData(form);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    try {
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (response.ok) {
-        formStatus.textContent = "✅ Pesan terkirim! Terima kasih 🙌";
-        formStatus.style.color = "limegreen";
-        form.reset();
-      } else {
-        formStatus.textContent = "❌ Gagal mengirim pesan. Coba lagi.";
-        formStatus.style.color = "red";
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
       }
-    } catch (error) {
-      formStatus.textContent = "⚠️ Terjadi kesalahan jaringan.";
-      formStatus.style.color = "orange";
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.fill();
+      }
     }
 
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Send Message";
-  });
-</script>
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 100; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+  </script>
 </body>
 </html>
